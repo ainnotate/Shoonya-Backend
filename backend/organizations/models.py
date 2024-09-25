@@ -125,9 +125,9 @@ class Invite(models.Model):
     def send_invite_email(cls, invite, user):
         current_environment = os.getenv("ENV")
         base_url = (
-            "dev.shoonya.ai4bharat.org"
+            "shoonya.haidata.ai"
             if current_environment == "dev"
-            else "shoonya.ai4bharat.org"
+            else "shoonya.haidata.ai"
         )
         subject = "Invitation to join Organization"
         invite_link = f"https://{base_url}/#/invite/{invite.invite_code}"

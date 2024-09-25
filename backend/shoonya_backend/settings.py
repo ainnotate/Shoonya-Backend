@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY","3k5v^npcchdmdh1%ig7vqvw*5xu!#a#^t^d*^p0@+(-t#h2d_n")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("ENV") == "dev"
@@ -38,10 +38,9 @@ if DEBUG:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*"]
 else:
     ALLOWED_HOSTS = [
-        "shoonya.ai4bharat.org",
+        "shoonya.haidata.ai",
         "0.0.0.0",
-        "backend.shoonya.ai4bharat.org",
-        "backend.shoonya2.ai4bharat.org",
+	"shoonya-api.haidata.ai"
     ]
 
 # Application definition
@@ -196,8 +195,8 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
-DOMAIN = "shoonya.ai4bharat.org"
-SITE_NAME = "shoonya.ai4bharat.org"
+DOMAIN = "shoonya.haidata.ai"
+SITE_NAME = "shoonya.haidata.ai"
 
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "#/forget-password/confirm/{uid}/{token}",

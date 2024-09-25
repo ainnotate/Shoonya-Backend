@@ -238,7 +238,7 @@ def create_tasks_from_dataitems(items, project):
             tasks, project.metadata_json["automatic_annotation_creation_mode"]
         )
     if input_dataset_info["prediction"] is not None:
-        user_object = User.objects.get(email="prediction@ai4bharat.org")
+        user_object = User.objects.get(email="aidac@haidata.ai")
 
         predictions = []
         prediction_field = input_dataset_info["prediction"]

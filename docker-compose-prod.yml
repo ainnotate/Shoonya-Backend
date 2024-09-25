@@ -1,43 +1,42 @@
 version: '3.3'
 
 services:
-  nginx:
-    build: ./nginx
-    image: evgeniy-khyst/nginx
-    env_file:
-      - ./config.env
-    volumes:
-      - nginx_conf:/etc/nginx/sites
-      - letsencrypt_certs:/etc/letsencrypt
-      - certbot_acme_challenge:/var/www/certbot
-      - ./vhosts:/etc/nginx/vhosts
-      - static_volume:/backend/static
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: unless-stopped
-
-  certbot:
-    build: ./certbot
-    image: evgeniy-khyst/certbot
-    env_file:
-      - ./config.env
-    volumes:
-      - letsencrypt_certs:/etc/letsencrypt
-      - certbot_acme_challenge:/var/www/certbot
+#  nginx:
+#    build: ./nginx
+#    image: evgeniy-khyst/nginx
+#    env_file:
+#      - ./config.env
+#    volumes:
+#      - nginx_conf:/etc/nginx/sites
+#      - letsencrypt_certs:/etc/letsencrypt
+#      - certbot_acme_challenge:/var/www/certbot
+#      - ./vhosts:/etc/nginx/vhosts
+#      - static_volume:/backend/static
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    restart: unless-stopped
+#
+#  certbot:
+#    build: ./certbot
+#    image: evgeniy-khyst/certbot
+#    env_file:
+#      - ./config.env
+#    volumes:
+#      - ./letsencrypt_certs:/etc/letsencrypt
+#      - ./certbot_acme_challenge:/var/www/certbot
 
   cron:
     build: ./cron
-    image: evgeniy-khyst/cron
-    environment:
-      COMPOSE_PROJECT_NAME: "${COMPOSE_PROJECT_NAME}"
+    image: shivain22/cron
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./:/workdir:ro
     restart: unless-stopped
-    
+
   web:
     build: ./backend
+    image: shivain22/shoonya-backend-web
     command: gunicorn --bind 0.0.0.0:8000 --workers 16 shoonya_backend.wsgi --timeout 300
     volumes:
       - ./backend/:/usr/src/backend/
@@ -52,9 +51,10 @@ services:
     image: "redis"
     ports:
       - 6379:6379
-  
+
   celery:
     container_name: celery-default
+    image: shivain22/shoonya-backend-celery
     restart: always
     build: ./backend
     command: celery -A shoonya_backend.celery worker -Q default --concurrency=2 --loglevel=info
@@ -63,11 +63,12 @@ services:
       - logs_vol:/logs
     depends_on:
       - redis
-      - web 
+      - web
 
   # This is the additional queue which contains the low-priority celery tasks. We can adjust the concurrency and workers alloted to this container. 
-  celery2: 
+  celery2:
     container_name: celery-low-priority
+    image: shivain22/shoonya-backend-celery2
     restart: always
     build: ./backend
     command: celery -A shoonya_backend.celery worker -Q functions --concurrency=2 --loglevel=info
@@ -81,6 +82,7 @@ services:
   # Celery beats - for scheduling daily e-mails
   celery-beat:
     build: ./backend
+    image: shivain22/shoonya-backend-celery-beat
     command: celery -A shoonya_backend.celery beat --loglevel=info
     volumes:
       - ./backend/:/usr/src/backend
@@ -88,11 +90,12 @@ services:
     depends_on:
       - redis
       - web
-  
+
   celery3:
     container_name: celery-reports
     restart: always
     build: ./backend
+    image: shivain22/shoonya-backend-celery3
     command: celery -A shoonya_backend.celery worker -Q reports --concurrency=2 --loglevel=info
     volumes:
       - ./backend/:/usr/src/backend/
@@ -116,7 +119,8 @@ services:
     container_name: flower
     restart: always
     build: ./backend
-    command: celery -A shoonya_backend.celery flower --conf="./usr/src/backend/shoonya_backend/flowerconfig.py" --basic-auth="${FLOWER_USERNAME}:${FLOWER_PASSWORD}"
+    image: shivain22/shoonya-backend-flower
+    command: celery -A shoonya_backend.celery flower --conf="./usr/src/backend/shoonya_backend/flowerconfig.py" --basic-auth="shoonya:flower123"
     ports:
       - "5555:5555"
     volumes:
@@ -125,13 +129,21 @@ services:
     depends_on:
       - redis
       - web
-
+  db:
+    restart: always
+    image: "postgres:11"
+    environment:
+      - POSTGRES_DB='main'
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
 volumes:
   logs_vol:
     external: true
-  nginx_conf:
-    external: true
   letsencrypt_certs:
     external: true
+  nginx_conf:
+    external: true
   certbot_acme_challenge:
+    external: true
   static_volume:
