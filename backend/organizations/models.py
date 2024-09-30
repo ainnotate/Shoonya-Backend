@@ -129,7 +129,7 @@ class Invite(models.Model):
             if current_environment == "dev"
             else "dlstudio.haidata.ai"
         )
-        subject = "Invitation to join Organization"
+        subject = "Invitation to join DL Studio Organization"
         invite_link = f"https://{base_url}/#/invite/{invite.invite_code}"
         text_content = f"Hello! You are invited to Shoonya. Your Invite link is: "
         style_string = """
@@ -183,7 +183,7 @@ class Invite(models.Model):
             <head>
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Invitation to join Shoonya Organisation</title>
+            <title>Invitation to join DL Studio Organisation</title>
             <style>
             {style_string}
             </style>
@@ -191,7 +191,7 @@ class Invite(models.Model):
             <body>
             <div class="container">
             <header class="header">
-            <h3>Invitaiton to join Shoonya</h3>
+            <h3>Invitation to join DL Studio</h3>
             </header>
             <main>
             <div style="margin: 1rem auto; width: fit-content">
@@ -213,11 +213,11 @@ class Invite(models.Model):
             color: white;
             border-radius: 1rem;
             border-width: 1px;
-            background-color: rgb(44, 39, 153);
+            background-color: rgb(0, 128, 128);
 
             ">
             <a target="_blank" style="text-decoration: none; color:white; font-size: 14px; display: block; padding: 0.2rem 0.5rem; " href="{invite_link}">
-            Join Shoonya Now
+            Join DL Studio Now
             </a>
             </td>
             </tr>
@@ -241,7 +241,7 @@ class Invite(models.Model):
             <footer class="footer">
             <p>
             Best Regards,<br />
-            Shoonya Team
+            DL Studio Team
             </p>
             </footer>
             </div>
