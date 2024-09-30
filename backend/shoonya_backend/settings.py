@@ -38,9 +38,9 @@ if DEBUG:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*"]
 else:
     ALLOWED_HOSTS = [
-        "shoonya.haidata.ai",
+        "dlstudio.haidata.ai",
         "0.0.0.0",
-	"shoonya-api.haidata.ai"
+	"dlstudio-api.haidata.ai"
     ]
 
 # Application definition
